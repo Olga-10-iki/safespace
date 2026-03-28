@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SafeSpace — You Are Not Alone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   CSS VARIABLES & RESET
+═══════════════════════════════════════════ */
+:root {
+  --sage: #7a9e87;
+  --sage-light: #a8c4b1;
+  --sage-dark: #4e7260;
+  --earth: #c4956a;
+  --earth-light: #deb99a;
+  --cream: #faf6f0;
+  --warm-white: #fff9f2;
+  --charcoal: #2d2d2d;
+  --mid: #6b6b6b;
+  --muted: #a0a0a0;
+  --border: #e8e0d5;
+  --danger: #c0392b;
+  --danger-light: #fdf0ee;
+  --success: #27ae60;
+  --success-light: #eafaf1;
+  --warning: #e67e22;
+  --warning-light: #fef9ee;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--charcoal);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+h1,h2,h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+h3 { font-size: 1.2rem; }
+p { color: var(--mid); }
+a { color: var(--sage-dark); text-decoration: none; }
+a:hover { color: var(--sage); }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.container--narrow { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+/* ═══════════════════════════════════════════
+   PAGE SYSTEM
+═══════════════════════════════════════════ */
+.page { display: none; animation: fadeSlideIn 0.4s ease; }
+.page.active { display: block; }
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   HEADER / NAV
+═══════════════════════════════════════════ */
+.site-header {
+  background: var(--warm-white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  gap: 16px;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--sage-dark);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-logo span { color: var(--earth); }
+.nav-links { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nav-link {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--mid);
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+.nav-link:hover { background: var(--border); color: var(--charcoal); }
+.nav-link.active { color: var(--sage-dark); background: rgba(122,158,135,0.12); }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.btn-primary { background: var(--sage-dark); color: white; }
+.btn-primary:hover { background: var(--sage); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-secondary { background: var(--cream); color: var(--sage-dark); border: 1.5px solid var(--sage-light); }
+.btn-secondary:hover { background: rgba(122,158,135,0.1); }
+.btn-earth { background: var(--earth); color: white; }
+.btn-earth:hover { background: #b8845d; transform: translateY(-1px); }
+.btn-ghost { background: none; border: 1.5px solid var(--border); color: var(--mid); }
+.btn-ghost:hover { border-color: var(--sage-light); color: var(--sage-dark); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: #a93226; }
+.btn-sm { padding: 8px 16px; font-size: 0.85rem; }
+.btn-full { width: 100%; justify-content: center; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* ═══════════════════════════════════════════
+   FORMS
+═══════════════════════════════════════════ */
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--charcoal); margin-bottom: 8px; }
+.form-label .required { color: var(--danger); margin-left: 2px; }
+.form-control {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--charcoal);
+  background: white;
+  transition: var(--transition);
+  outline: none;
+}
+.form-control:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,135,0.15); }
+.form-control::placeholder { color: var(--muted); }
+textarea.form-control { resize: vertical; min-height: 120px; line-height: 1.6; }
+select.form-control { cursor: pointer; }
+.form-hint { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+.form-error { font-size: 0.82rem; color: var(--danger); margin-top: 6px; display: none; }
+.form-error.show { display: block; }
+.char-count { font-size: 0.8rem; color: var(--muted); text-align: right; margin-top: 4px; }
+
+/* Toggle */
+.toggle-row { display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(122,158,135,0.07); border-radius: var(--radius-sm); border: 1px solid rgba(122,158,135,0.2); }
+.toggle-label { font-size: 0.9rem; font-weight: 500; color: var(--charcoal); }
+.toggle-sub { font-size: 0.82rem; color: var(--muted); }
+.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 24px; cursor: pointer; transition: var(--transition); }
+.toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: var(--transition); }
+input:checked + .toggle-slider { background: var(--sage-dark); }
+input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* ═══════════════════════════════════════════
+   ALERTS & TOASTS
+═══════════════════════════════════════════ */
+.alert { display: none; padding: 14px 18px; border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 20px; }
+.alert.show { display: block; }
+.alert-success { background: var(--success-light); color: var(--success); border: 1px solid rgba(39,174,96,0.2); }
+.alert-error { background: var(--danger-light); color: var(--danger); border: 1px solid rgba(192,57,43,0.2); }
+.alert-info { background: var(--warning-light); color: var(--warning); border: 1px solid rgba(230,126,34,0.2); }
+
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.toast {
+  background: var(--charcoal);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease;
+  pointer-events: all;
+  max-width: 340px;
+}
+.toast.success { background: var(--sage-dark); }
+.toast.error { background: var(--danger); }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ═══════════════════════════════════════════
+   CRISIS ALERT
+═══════════════════════════════════════════ */
+.crisis-alert {
+  display: none;
+  background: #fff8e6;
+  border: 2px solid #f0c040;
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.crisis-alert.show { display: block; }
+.crisis-alert h4 { color: #8a6000; margin-bottom: 4px; font-size: 1rem; }
+.crisis-alert p { color: #6b4d00; font-size: 0.9rem; }
+.crisis-alert a { color: #8a6000; font-weight: 600; text-decoration: underline; }
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  animation: fadeSlideIn 0.25s ease;
+}
+.modal h3 { margin-bottom: 8px; }
+.modal p { margin-bottom: 20px; font-size: 0.9rem; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+
+/* ═══════════════════════════════════════════
+   SPINNER
+═══════════════════════════════════════════ */
+.spinner {
+  width: 36px; height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--sage);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 40px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero {
+  background: linear-gradient(135deg, #e8f0eb 0%, #faf0e6 50%, #f0e8d8 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237a9e87' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-inner { position: relative; max-width: 680px; margin: 0 auto; }
+.hero-eyebrow { display: inline-block; background: rgba(122,158,135,0.15); color: var(--sage-dark); font-size: 0.85rem; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; }
+.hero h1 { margin-bottom: 20px; }
+.hero h1 em { font-style: italic; color: var(--sage-dark); }
+.hero > .hero-inner > p { font-size: 1.1rem; max-width: 520px; margin: 0 auto 36px; }
+.hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-stats { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; border-top: 1px solid rgba(122,158,135,0.2); padding-top: 32px; }
+.hero-stat { text-align: center; }
+.hero-stat .num { display: block; font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--sage-dark); }
+.hero-stat .label { font-size: 0.82rem; color: var(--mid); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ═══════════════════════════════════════════
+   CARDS & STORIES GRID
+═══════════════════════════════════════════ */
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 8px;
+}
+.card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.story-card { cursor: pointer; }
+.story-card .title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--charcoal); margin: 12px 0 8px; line-height: 1.35; }
+.story-card .excerpt { font-size: 0.88rem; color: var(--mid); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; line-height: 1.5; }
+.story-card .meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: 12px; }
+.meta-item { display: flex; align-items: center; gap: 4px; }
+
+.category-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.cat-mental-health { background: #e8f0eb; color: #4e7260; }
+.cat-family { background: #fef0e6; color: #8a4a00; }
+.cat-academic { background: #e8eaf6; color: #3949ab; }
+.cat-loneliness { background: #f3e5f5; color: #7b1fa2; }
+.cat-career { background: #e0f2f1; color: #00695c; }
+.cat-relationships { background: #fce4ec; color: #880e4f; }
+.cat-identity { background: #fff3e0; color: #e65100; }
+.cat-grief { background: #eceff1; color: #455a64; }
+.cat-other { background: #f5f5f5; color: #616161; }
+
+.overcome-badge {
+  display: inline-block;
+  background: var(--success-light);
+  color: var(--success);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.story-status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.status-approved { background: var(--success-light); color: var(--success); }
+.status-pending { background: var(--warning-light); color: var(--warning); }
+.status-rejected, .status-removed { background: var(--danger-light); color: var(--danger); }
+
+/* ═══════════════════════════════════════════
+   SEARCH & FILTERS
+═══════════════════════════════════════════ */
+.category-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.cat-pill {
+  background: white;
+  border: 1.5px solid var(--border);
+  color: var(--mid);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-body);
+}
+.cat-pill:hover { border-color: var(--sage-light); color: var(--sage-dark); }
+.cat-pill.active { background: var(--sage-dark); color: white; border-color: var(--sage-dark); }
+.cat-pill small { opacity: 0.75; }
+
+.search-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.search-input-wrap { position: relative; flex: 1; min-width: 200px; }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+.search-input-wrap .form-control { padding-left: 40px; }
+.sort-select { width: auto; min-width: 160px; }
+
+/* ═══════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════ */
+.empty-state { text-align: center; padding: 60px 24px; color: var(--mid); }
+.empty-state .icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+.empty-state h3 { color: var(--charcoal); margin-bottom: 8px; }
+
+/* ═══════════════════════════════════════════
+   STORY DETAIL
+═══════════════════════════════════════════ */
+.story-detail { padding: 40px 0 80px; }
+.story-detail .back-link { color: var(--mid); font-size: 0.9rem; cursor: pointer; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 6px; }
+.story-detail .back-link:hover { color: var(--sage-dark); }
+.story-detail .story-header { margin-bottom: 32px; }
+.story-detail .story-header h1 { font-size: clamp(1.5rem, 3vw, 2.2rem); margin-bottom: 16px; }
+
+.story-section { margin-bottom: 32px; }
+.story-section .section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+.story-section .section-body { font-size: 1rem; line-height: 1.8; color: var(--charcoal); white-space: pre-wrap; }
+
+.story-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; padding: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.like-btn { background: var(--cream); border: 1.5px solid var(--border); color: var(--mid); padding: 10px 20px; border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font-body); font-size: 0.9rem; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
+.like-btn:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+.like-btn.liked { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+
+/* ═══════════════════════════════════════════
+   COMMENTS
+═══════════════════════════════════════════ */
+.comments-section { margin-top: 40px; }
+.comments-section h3 { margin-bottom: 20px; }
+.comment-item { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.comment-author { font-weight: 600; font-size: 0.88rem; color: var(--charcoal); }
+.comment-date { font-size: 0.8rem; color: var(--muted); }
+.comment-text { font-size: 0.93rem; line-height: 1.7; color: var(--charcoal); margin-bottom: 10px; }
+.comment-like { background: none; border: none; color: var(--muted); font-size: 0.82rem; cursor: pointer; padding: 4px 0; transition: var(--transition); font-family: var(--font-body); }
+.comment-like:hover { color: var(--danger); }
+
+.comment-form { margin-top: 24px; background: white; border-radius: var(--radius-sm); padding: 20px; border: 1px solid var(--border); }
+.comment-form h4 { margin-bottom: 12px; font-size: 0.95rem; color: var(--charcoal); }
+
+/* ═══════════════════════════════════════════
+   SUBMIT FORM PAGE
+═══════════════════════════════════════════ */
+.submit-page { padding: 40px 0 80px; }
+.page-header { margin-bottom: 32px; }
+.page-header h2 { margin-bottom: 8px; }
+.form-card { background: white; border-radius: var(--radius); padding: 36px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.step-indicator { display: flex; gap: 0; margin-bottom: 32px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+.step { flex: 1; text-align: center; padding: 10px; font-size: 0.8rem; font-weight: 600; background: var(--cream); color: var(--muted); border-right: 1px solid var(--border); }
+.step:last-child { border-right: none; }
+.step.active { background: var(--sage-dark); color: white; }
+
+/* ═══════════════════════════════════════════
+   AUTH PAGES
+═══════════════════════════════════════════ */
+.auth-page { min-height: calc(100vh - 65px); display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+.auth-card { background: white; border-radius: var(--radius); padding: 40px; max-width: 400px; width: 100%; border: 1px solid var(--border); box-shadow: var(--shadow-md); }
+.auth-card h2 { margin-bottom: 8px; }
+.auth-card .sub { margin-bottom: 28px; font-size: 0.9rem; }
+.auth-switch { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--mid); }
+.auth-switch button { background: none; border: none; color: var(--sage-dark); font-weight: 600; cursor: pointer; font-family: var(--font-body); font-size: 0.9rem; }
+
+/* ═══════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════ */
+.dashboard-page { padding: 40px 0 80px; }
+.dashboard-header { margin-bottom: 32px; }
+.dashboard-header h2 { margin-bottom: 6px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.stat-card { background: white; border-radius: var(--radius-sm); padding: 20px; text-align: center; border: 1px solid var(--border); }
+.stat-card .num { display: block; font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--sage-dark); }
+.stat-card .label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.section-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--charcoal); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+.reminder-card { background: var(--warning-light); border: 1px solid rgba(230,126,34,0.25); border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+/* ═══════════════════════════════════════════
+   ADMIN
+═══════════════════════════════════════════ */
+.admin-page { padding: 40px 0 80px; }
+.admin-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+.admin-tab { background: none; border: none; padding: 12px 20px; font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; color: var(--mid); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: var(--transition); }
+.admin-tab:hover { color: var(--charcoal); }
+.admin-tab.active { color: var(--sage-dark); border-bottom-color: var(--sage-dark); }
+.admin-panel { display: none; }
+.admin-panel.active { display: block; }
+.table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.admin-table thead { background: var(--cream); }
+.admin-table th { text-align: left; padding: 12px 16px; font-weight: 600; color: var(--charcoal); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.admin-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: var(--cream); }
+.admin-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.site-footer {
+  background: var(--charcoal);
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  padding: 32px 24px;
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+.site-footer a { color: var(--sage-light); }
+.site-footer a:hover { color: white; }
+.site-footer strong { color: white; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .nav { padding: 12px 16px; }
+  .hero { padding: 48px 16px; }
+  .hero-stats { gap: 20px; }
+  .stories-grid { grid-template-columns: 1fr; }
+  .form-card { padding: 20px; }
+  .auth-card { padding: 24px; }
+  .step-indicator { font-size: 0.72rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <div class="nav-logo" onclick="navigate('home')">🌿 Safe<span>Space</span></div>
+    <div class="nav-links">
+      <button class="nav-link" data-page="home" onclick="navigate('home')">Home</button>
+      <button class="nav-link" data-page="stories" onclick="navigate('stories')">Stories</button>
+      <button class="nav-link" data-page="submit" onclick="navigate('submit')">Share</button>
+      <button class="nav-link" data-page="dashboard" id="dashboardNavBtn" onclick="navigate('dashboard')" style="display:none">My Dashboard</button>
+      <button class="nav-link" data-page="admin" id="adminNavBtn" onclick="navigate('admin')" style="display:none">Admin</button>
+      <button class="nav-link" data-page="login" id="loginNavBtn" onclick="navigate('login')">Log In</button>
+      <button class="nav-link" data-page="register" id="registerNavBtn" onclick="navigate('register')">Register</button>
+      <button class="btn btn-ghost btn-sm" id="logoutNavBtn" onclick="logout()" style="display:none">Logout</button>
+    </div>
+  </nav>
+</header>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Report Modal -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal">
+    <h3>🚩 Report Content</h3>
+    <p>Help us keep SafeSpace safe. Select the reason for your report.</p>
+    <div class="form-group">
+      <label class="form-label">Reason</label>
+      <select class="form-control" id="reportReason">
+        <option value="harassment">Harassment or bullying</option>
+        <option value="hate-speech">Hate speech</option>
+        <option value="self-harm">Self-harm or crisis content</option>
+        <option value="spam">Spam</option>
+        <option value="misinformation">Misinformation</option>
+        <option value="privacy-violation">Privacy violation</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Additional details (optional)</label>
+      <textarea class="form-control" id="reportDetails" placeholder="Tell us more..." style="min-height:80px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('reportModal')">Cancel</button>
+      <button class="btn btn-danger" onclick="submitReport()">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- Overcome Modal -->
+<div class="modal-overlay" id="overcomeModal">
+  <div class="modal">
+    <h3>🌱 Share Your Progress</h3>
+    <p>You're back! Share how you overcame this challenge to inspire others.</p>
+    <div class="form-group">
+      <label class="form-label">How I Overcame It <span class="required">*</span></label>
+      <textarea class="form-control" id="overcomeText" placeholder="What helped you get through this? Share your journey..." style="min-height:140px"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('overcomeModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitOvercome()">Share My Progress</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ HOME PAGE ═══════════════════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">🌿 A safe space for African youth</div>
+      <h1>You don't have to face it <em>alone</em></h1>
+      <p>Share your story anonymously, find others who understand, and grow together through honest, supported connection.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="navigate('stories')">✦ Read Stories</button>
+        <button class="btn btn-secondary" onclick="navigate('submit')">Share Your Story</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="num" id="statStories">—</span><span class="label">Stories Shared</span></div>
+        <div class="hero-stat"><span class="num" id="statComments">—</span><span class="label">Supportive Comments</span></div>
+        <div class="hero-stat"><span class="num" id="statOvercome">—</span><span class="label">Overcome Updates</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container" style="padding-top:56px;padding-bottom:56px">
+    <h2 style="margin-bottom:8px">Recent Stories</h2>
+    <p style="margin-bottom:28px">Real experiences from young people across Africa. Every story matters.</p>
+    <div class="stories-grid" id="homeStoriesGrid"><div class="spinner"></div></div>
+    <div style="text-align:center;margin-top:32px">
+      <button class="btn btn-secondary" onclick="navigate('stories')">View All Stories →</button>
+    </div>
+  </div>
+
+  <div style="background:white;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:56px 24px">
+    <div class="container">
+      <h2 style="text-align:center;margin-bottom:8px">How SafeSpace Works</h2>
+      <p style="text-align:center;margin-bottom:40px">Simple, safe, and supportive — every step of the way</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px">
+        <div style="text-align:center;padding:24px"><div style="font-size:2.5rem;margin-bottom:16px">🌱</div><h3 style="margin-bottom:8px">Share Anonymously</h3><p style="font-size:0.9rem">Post your situation without revealing your identity. Safety comes first.</p></div>
+        <div style="text-align:center;padding:24px"><div style="font-size:2.5rem;margin-bottom:16px">🔍</div><h3 style="margin-bottom:8px">Find Similar Stories</h3><p style="font-size:0.9rem">Browse by category to find others who've experienced what you're going through.</p></div>
+        <div style="text-align:center;padding:24px"><div style="font-size:2.5rem;margin-bottom:16px">💬</div><h3 style="margin-bottom:8px">Connect & Support</h3><p style="font-size:0.9rem">Leave encouragement. Ask questions. Build community through shared experience.</p></div>
+        <div style="text-align:center;padding:24px"><div style="font-size:2.5rem;margin-bottom:16px">🌟</div><h3 style="margin-bottom:8px">Update Your Journey</h3><p style="font-size:0.9rem">Come back and share how you overcame it. Your progress inspires others.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ STORIES PAGE ═══════════════════════ -->
+<div class="page" id="page-stories">
+  <div class="container" style="padding-top:40px;padding-bottom:60px">
+    <h2 style="margin-bottom:6px">Community Stories</h2>
+    <p style="margin-bottom:28px">Real experiences shared by youth across Africa</p>
+    <div class="category-filters" id="categoryFilters">
+      <button class="cat-pill active" onclick="filterCategory(null, this)">All</button>
+    </div>
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="form-control" id="searchInput" placeholder="Search stories..." oninput="debounceSearch()">
+      </div>
+      <select class="form-control sort-select" id="sortSelect" onchange="onSortChange()">
+        <option value="recent">Most Recent</option>
+        <option value="popular">Most Liked</option>
+        <option value="views">Most Viewed</option>
+      </select>
+    </div>
+    <div class="stories-grid" id="storiesGrid"><div class="spinner"></div></div>
+    <div id="paginationRow" style="text-align:center;margin-top:32px;display:none">
+      <button class="btn btn-ghost" id="loadMoreBtn" onclick="loadMore()">Load More</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ STORY DETAIL PAGE ═══════════════════════ -->
+<div class="page" id="page-story-detail">
+  <div class="container--narrow story-detail" id="storyDetailContent">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SUBMIT STORY PAGE ═══════════════════════ -->
+<div class="page" id="page-submit">
+  <div class="container--narrow submit-page">
+    <div class="page-header">
+      <h2>Share Your Story</h2>
+      <p>Your experience can give someone else hope. You're safe here — share as much or as little as you want.</p>
+    </div>
+    <div class="form-card">
+      <div class="step-indicator">
+        <div class="step active">1. Your Situation</div>
+        <div class="step">2. Your Journey</div>
+        <div class="step">3. Privacy</div>
+      </div>
+      <div id="crisis-alert-submit" class="crisis-alert">
+        <h4>💛 We see you</h4>
+        <p>Your story touches on something serious. You are not alone. Please consider reaching out to <a href="https://www.befrienders.org" target="_blank">Befrienders Worldwide</a> or a trusted person in your life.</p>
+      </div>
+      <div id="submitAlert" class="alert"></div>
+      <form id="submitStoryForm" onsubmit="submitStory(event)">
+        <div class="form-group">
+          <label class="form-label" for="storyTitle">Story Title <span class="required">*</span></label>
+          <input type="text" class="form-control" id="storyTitle" placeholder="Give your story a brief title..." maxlength="150" oninput="updateCharCount(this,'titleCount',150)">
+          <div class="char-count"><span id="titleCount">0</span>/150</div>
+          <div class="form-error" id="titleError">Title must be at least 10 characters.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="storyCategory">Category <span class="required">*</span></label>
+          <select class="form-control" id="storyCategory">
+            <option value="">— Select the type of challenge —</option>
+            <option value="mental-health">Mental Health</option>
+            <option value="family">Family Issues</option>
+            <option value="academic">Academic / School Pressure</option>
+            <option value="loneliness">Loneliness & Isolation</option>
+            <option value="career">Career & Unemployment</option>
+            <option value="relationships">Relationships</option>
+            <option value="identity">Identity & Self</option>
+            <option value="grief">Grief & Loss</option>
+            <option value="other">Other</option>
+          </select>
+          <div class="form-error" id="categoryError">Please select a category.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="storySituation">My Situation <span class="required">*</span></label>
+          <textarea class="form-control" id="storySituation" placeholder="Describe what you're going through or what you experienced. Be as honest as you feel comfortable being. There is no judgment here..." maxlength="3000" oninput="updateCharCount(this,'situationCount',3000); checkCrisisWords(this.value)" style="min-height:180px"></textarea>
+          <div class="char-count"><span id="situationCount">0</span>/3000</div>
+          <div class="form-error" id="situationError">Please write at least 50 characters.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="storyOvercome">How I Overcame It <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+          <textarea class="form-control" id="storyOvercome" placeholder="Did you find a way through? Share it — your progress could inspire someone else. You can always add this later." maxlength="3000" oninput="updateCharCount(this,'overcomeCount',3000)" style="min-height:140px"></textarea>
+          <div class="char-count"><span id="overcomeCount">0</span>/3000</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="storyTags">Tags <span style="color:var(--muted);font-weight:400">(optional, comma-separated)</span></label>
+          <input type="text" class="form-control" id="storyTags" placeholder="e.g. anxiety, university, family">
+          <div class="form-hint">Add up to 5 tags to help others find your story.</div>
+        </div>
+        <div class="form-group">
+          <div class="toggle-row">
+            <label class="toggle-switch">
+              <input type="checkbox" id="anonymousToggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <div>
+              <div class="toggle-label">Post Anonymously</div>
+              <div class="toggle-sub">Your identity will be protected with a nature-themed alias.</div>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="submitBtn">🌿 Share My Story</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ LOGIN PAGE ═══════════════════════ -->
+<div class="page" id="page-login">
+  <div class="auth-page">
+    <div class="auth-card">
+      <h2>Welcome Back</h2>
+      <p class="sub">Sign in to your SafeSpace account.</p>
+      <div id="loginAlert" class="alert"></div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email</label>
+          <input type="email" class="form-control" id="loginEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Password</label>
+          <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">Log In</button>
+      </form>
+      <div class="auth-switch">Don't have an account? <button onclick="navigate('register')">Create one</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ REGISTER PAGE ═══════════════════════ -->
+<div class="page" id="page-register">
+  <div class="auth-page">
+    <div class="auth-card">
+      <h2>Join SafeSpace</h2>
+      <p class="sub">Create a free account to share your journey and track your stories.</p>
+      <div id="registerAlert" class="alert"></div>
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label" for="regUsername">Username</label>
+          <input type="text" class="form-control" id="regUsername" placeholder="Choose a username (3–30 chars)" minlength="3" maxlength="30" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Email</label>
+          <input type="email" class="form-control" id="regEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Password</label>
+          <input type="password" class="form-control" id="regPassword" placeholder="At least 8 characters" minlength="8" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="registerBtn">Create Account</button>
+      </form>
+      <div class="auth-switch">Already have an account? <button onclick="navigate('login')">Log in</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DASHBOARD PAGE ═══════════════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="container dashboard-page" id="dashboardContent">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ADMIN PAGE ═══════════════════════ -->
+<div class="page" id="page-admin">
+  <div class="container admin-page">
+    <div class="dashboard-header">
+      <h2>Admin Panel</h2>
+      <p>Manage content, users, and platform safety</p>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('overview', this)">Overview</button>
+      <button class="admin-tab" onclick="switchAdminTab('stories', this)">Stories</button>
+      <button class="admin-tab" onclick="switchAdminTab('comments', this)">Comments</button>
+      <button class="admin-tab" onclick="switchAdminTab('reports', this)">Reports</button>
+    </div>
+    <div class="admin-panel active" id="admin-overview">
+      <div class="stats-grid" id="adminStatsGrid"><div class="spinner"></div></div>
+      <h3 class="section-title">Top Stories by Views</h3>
+      <div class="table-wrap"><table class="admin-table" id="topStoriesTable"><thead><tr><th>Title</th><th>Category</th><th>Views</th><th>Likes</th></tr></thead><tbody id="topStoriesTbody"></tbody></table></div>
+    </div>
+    <div class="admin-panel" id="admin-stories">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="loadAdminStories('pending')">Pending</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadAdminStories('approved')">Approved</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadAdminStories('rejected')">Rejected</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadAdminStories()">All</button>
+      </div>
+      <div class="table-wrap"><table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="adminStoriesTbody"></tbody></table></div>
+    </div>
+    <div class="admin-panel" id="admin-comments">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="loadAdminComments('pending')">Pending</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadAdminComments('approved')">Approved</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadAdminComments()">All</button>
+      </div>
+      <div class="table-wrap"><table class="admin-table"><thead><tr><th>Content</th><th>Author</th><th>Status</th><th>Actions</th></tr></thead><tbody id="adminCommentsTbody"></tbody></table></div>
+    </div>
+    <div class="admin-panel" id="admin-reports">
+      <div class="table-wrap"><table class="admin-table"><thead><tr><th>Type</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="adminReportsTbody"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <strong>SafeSpace</strong> — A peer support platform for African youth &nbsp;|&nbsp;
+  <a href="https://www.befrienders.org" target="_blank">Crisis Resources</a> &nbsp;|&nbsp;
+  <a href="https://www.who.int/health-topics/mental-health" target="_blank">WHO Mental Health</a><br>
+  <span style="margin-top:8px;display:block;font-size:0.8rem;opacity:0.7">SafeSpace is not a substitute for professional mental health care. If you are in crisis, please seek professional help immediately.</span>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG & STATE
+// ═══════════════════════════════════════════
+const API = '/api';
+const state = {
+  user: null,
+  token: null,
+  currentPage: 'home',
+  stories: { data: [], page: 1, hasMore: false, category: null, sort: 'recent', search: '' },
+  currentStoryId: null,
+  reportTarget: null,
+  overcomeTarget: null,
+  searchTimer: null,
+};
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  const savedToken = localStorage.getItem('ss_token');
+  const savedUser = localStorage.getItem('ss_user');
+  if (savedToken && savedUser) {
+    try {
+      state.token = savedToken;
+      state.user = JSON.parse(savedUser);
+      updateNavForUser();
+    } catch (e) {
+      localStorage.removeItem('ss_token');
+      localStorage.removeItem('ss_user');
+    }
+  }
+  navigate('home');
+});
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+  const el = document.getElementById('page-' + page);
+  if (!el) return;
+  el.classList.add('active');
+  state.currentPage = page;
+
+  const navBtn = document.querySelector(`.nav-link[data-page="${page}"]`);
+  if (navBtn) navBtn.classList.add('active');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (page === 'home') loadHomeStories();
+  if (page === 'stories') { resetStories(); loadStories(); loadCategories(); }
+  if (page === 'dashboard') {
+    if (!state.user) { navigate('login'); showToast('Please log in first.', 'error'); return; }
+    loadDashboard();
+  }
+  if (page === 'admin') {
+    if (!state.user || !['admin', 'moderator'].includes(state.user.role)) {
+      navigate('home'); showToast('Access denied.', 'error'); return;
+    }
+    loadAdminOverview();
+  }
+}
+
+// ═══════════════════════════════════════════
+// API HELPER
+// ═══════════════════════════════════════════
+async function api(method, endpoint, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (state.token) opts.headers['Authorization'] = `Bearer ${state.token}`;
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch(API + endpoint, opts);
+    const data = await res.json();
+    return { ok: res.ok, status: res.status, data };
+  } catch (err) {
+    console.error('[API Error]', err);
+    return { ok: false, data: { message: 'Connection error. Is the server running on port 3001?' } };
+  }
+}
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Logging in…';
+  const res = await api('POST', '/auth/login', {
+    email: document.getElementById('loginEmail').value,
+    password: document.getElementById('loginPassword').value,
+  });
+  btn.disabled = false; btn.textContent = 'Log In';
+  if (res.ok) {
+    state.token = res.data.token;
+    state.user = res.data.user;
+    localStorage.setItem('ss_token', state.token);
+    localStorage.setItem('ss_user', JSON.stringify(state.user));
+    updateNavForUser();
+    showToast('Welcome back! 🌿', 'success');
+    navigate('home');
+  } else {
+    showAlert('loginAlert', res.data.message || 'Login failed.', 'error');
+  }
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  const res = await api('POST', '/auth/register', {
+    username: document.getElementById('regUsername').value,
+    email: document.getElementById('regEmail').value,
+    password: document.getElementById('regPassword').value,
+  });
+  btn.disabled = false; btn.textContent = 'Create Account';
+  if (res.ok) {
+    state.token = res.data.token;
+    state.user = res.data.user;
+    localStorage.setItem('ss_token', state.token);
+    localStorage.setItem('ss_user', JSON.stringify(state.user));
+    updateNavForUser();
+    showToast('Account created! Welcome to SafeSpace 🌿', 'success');
+    navigate('home');
+  } else {
+    const msg = res.data.errors ? res.data.errors.map(e => e.msg).join(' ') : res.data.message;
+    showAlert('registerAlert', msg || 'Registration failed.', 'error');
+  }
+}
+
+function logout() {
+  state.token = null;
+  state.user = null;
+  localStorage.removeItem('ss_token');
+  localStorage.removeItem('ss_user');
+  updateNavForUser();
+  showToast('Logged out. Take care. 🌿');
+  navigate('home');
+}
+
+function updateNavForUser() {
+  const loggedIn = !!state.user;
+  document.getElementById('loginNavBtn').style.display = loggedIn ? 'none' : '';
+  document.getElementById('registerNavBtn').style.display = loggedIn ? 'none' : '';
+  document.getElementById('logoutNavBtn').style.display = loggedIn ? '' : 'none';
+  document.getElementById('dashboardNavBtn').style.display = loggedIn ? '' : 'none';
+  const isAdmin = loggedIn && ['admin', 'moderator'].includes(state.user.role);
+  document.getElementById('adminNavBtn').style.display = isAdmin ? '' : 'none';
+}
+
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
+async function loadHomeStories() {
+  const grid = document.getElementById('homeStoriesGrid');
+  grid.innerHTML = '<div class="spinner"></div>';
+  const res = await api('GET', '/stories?limit=6&sort=popular');
+  if (res.ok) {
+    const stories = res.data.data;
+    grid.innerHTML = stories.length
+      ? stories.map(storyCard).join('')
+      : '<div class="empty-state"><span class="icon">🌱</span><h3>No stories yet</h3><p>Be the first to share.</p></div>';
+
+    // Load stats — use public categories endpoint instead of admin endpoint
+    const catRes = await api('GET', '/stories/categories');
+    if (catRes.ok) {
+      const total = catRes.data.data.reduce((sum, c) => sum + c.count, 0);
+      document.getElementById('statStories').textContent = total;
+    }
+    // Approximate overcome count from fetched stories
+    const allRes = await api('GET', '/stories?limit=50');
+    if (allRes.ok) {
+      document.getElementById('statOvercome').textContent = allRes.data.data.filter(s => s.overcome).length;
+      // Comments: sum up comment counts
+      document.getElementById('statComments').textContent = allRes.data.data.reduce((s, x) => s + (x.commentCount || 0), 0);
+    }
+  } else {
+    grid.innerHTML = '<div class="empty-state"><span class="icon">⚡</span><h3>Could not load stories</h3><p>Make sure the backend server is running on port 3001.</p></div>';
+  }
+}
+
+// ═══════════════════════════════════════════
+// STORIES LIST
+// ═══════════════════════════════════════════
+async function loadCategories() {
+  const container = document.getElementById('categoryFilters');
+  const res = await api('GET', '/stories/categories');
+  if (!res.ok) return;
+  const activeCat = state.stories.category;
+  const pills = res.data.data.filter(c => c.count > 0).map(c =>
+    `<button class="cat-pill${activeCat === c.id ? ' active' : ''}" data-cat="${c.id}" onclick="filterCategory('${c.id}', this)">${escHtml(c.label)} <small>(${c.count})</small></button>`
+  ).join('');
+  container.innerHTML = `<button class="cat-pill${!activeCat ? ' active' : ''}" onclick="filterCategory(null, this)">All</button>${pills}`;
+}
+
+function resetStories() {
+  state.stories = { ...state.stories, data: [], page: 1, hasMore: false };
+}
+
+async function loadStories(append = false) {
+  const grid = document.getElementById('storiesGrid');
+  if (!append) grid.innerHTML = '<div class="spinner"></div>';
+  const { category, sort, search, page } = state.stories;
+  let url = `/stories?page=${page}&limit=9&sort=${sort}`;
+  if (category) url += `&category=${encodeURIComponent(category)}`;
+  if (search) url += `&search=${encodeURIComponent(search)}`;
+  const res = await api('GET', url);
+  if (res.ok) {
+    const { data, pagination } = res.data;
+    state.stories.data = append ? [...state.stories.data, ...data] : data;
+    state.stories.hasMore = pagination.page < pagination.pages;
+    grid.innerHTML = state.stories.data.map(storyCard).join('') ||
+      '<div class="empty-state"><span class="icon">🔍</span><h3>No stories found</h3><p>Try a different category or search term.</p></div>';
+    document.getElementById('paginationRow').style.display = state.stories.hasMore ? 'block' : 'none';
+  } else {
+    if (!append) grid.innerHTML = '<div class="empty-state"><span class="icon">⚡</span><h3>Could not load stories</h3><p>Please check your connection.</p></div>';
+  }
+}
+
+function loadMore() {
+  state.stories.page++;
+  loadStories(true);
+}
+
+function filterCategory(cat, btn) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  state.stories.category = cat;
+  state.stories.page = 1;
+  state.stories.data = [];
+  loadStories();
+}
+
+function debounceSearch() {
+  clearTimeout(state.searchTimer);
+  state.searchTimer = setTimeout(() => {
+    state.stories.search = document.getElementById('searchInput').value;
+    state.stories.page = 1;
+    state.stories.data = [];
+    loadStories();
+  }, 400);
+}
+
+function onSortChange() {
+  state.stories.sort = document.getElementById('sortSelect').value;
+  state.stories.page = 1;
+  state.stories.data = [];
+  loadStories();
+}
+
+// ═══════════════════════════════════════════
+// STORY CARD HTML
+// ═══════════════════════════════════════════
+function storyCard(s) {
+  const catLabel = s.category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const initials = s.authorDisplay.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  return `
+  <div class="card story-card" onclick="openStory('${escHtml(s.id)}')">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:4px">
+      <span class="category-badge cat-${s.category}">${escHtml(catLabel)}</span>
+      ${s.overcome ? '<span class="overcome-badge">✓ Overcome</span>' : ''}
+    </div>
+    <div class="title">${escHtml(s.title)}</div>
+    <div class="excerpt">${escHtml(s.situation)}</div>
+    <div class="meta">
+      <span class="meta-item">
+        <span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--sage-light),var(--earth-light));display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:white;flex-shrink:0">${escHtml(initials)}</span>
+        ${escHtml(s.authorDisplay)}
+      </span>
+      <span class="meta-item">♥ ${s.likes}</span>
+      <span class="meta-item">👁 ${s.views}</span>
+      <span class="meta-item">💬 ${s.commentCount}</span>
+      <span class="meta-item" style="margin-left:auto">${timeAgo(s.createdAt)}</span>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// STORY DETAIL
+// ═══════════════════════════════════════════
+async function openStory(id) {
+  state.currentStoryId = id;
+  navigate('story-detail');
+  const container = document.getElementById('storyDetailContent');
+  container.innerHTML = '<div class="spinner"></div>';
+  const res = await api('GET', `/stories/${id}`);
+  if (!res.ok) {
+    container.innerHTML = '<div class="empty-state"><span class="icon">😔</span><h3>Story not found</h3><p>It may have been removed or is under review.</p></div>';
+    return;
+  }
+  const s = res.data.data;
+  const catLabel = s.category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const tags = (s.tags || []).map(t => `<span style="background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:0.78rem;color:var(--mid)">${escHtml(t)}</span>`).join('');
+
+  container.innerHTML = `
+    <div><button class="back-link" onclick="navigate('stories')">← Back to Stories</button></div>
+    <div class="story-header">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <span class="category-badge cat-${s.category}">${escHtml(catLabel)}</span>
+        ${s.overcome ? '<span class="overcome-badge">✓ Overcome</span>' : ''}
+        <span style="font-size:0.82rem;color:var(--muted);margin-left:auto">${timeAgo(s.createdAt)}</span>
+      </div>
+      <h1>${escHtml(s.title)}</h1>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+        <span style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--sage-light),var(--earth-light));display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:white">${escHtml(s.authorDisplay.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase())}</span>
+        <span style="font-weight:600;color:var(--charcoal)">${escHtml(s.authorDisplay)}</span>
+        <span style="color:var(--muted);font-size:0.82rem">· ${s.views} views</span>
+      </div>
+    </div>
+
+    <div class="story-section">
+      <div class="section-label">The Situation</div>
+      <div class="section-body">${escHtml(s.situation)}</div>
+    </div>
+
+    ${s.overcome ? `
+    <div class="story-section" style="background:var(--success-light);border:1px solid rgba(39,174,96,0.2);border-radius:var(--radius-sm);padding:20px">
+      <div class="section-label" style="color:var(--success)">🌱 How I Overcame It</div>
+      <div class="section-body" style="color:#1a5c35">${escHtml(s.overcome)}</div>
+    </div>` : `
+    <div class="story-section" style="background:var(--warning-light);border:1px solid rgba(230,126,34,0.2);border-radius:var(--radius-sm);padding:20px">
+      <div class="section-label" style="color:var(--warning)">⏳ Journey In Progress</div>
+      <p style="font-size:0.9rem;color:#6b4d00">This person is still going through this challenge. Your support means the world.</p>
+    </div>`}
+
+    ${tags ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">${tags}</div>` : ''}
+
+    <div class="story-actions">
+      <button class="like-btn" id="likeBtn-${s.id}" onclick="likeStory('${s.id}', this)">♥ <span>${s.likes}</span> Helpful</button>
+      <button class="btn btn-ghost btn-sm" onclick="openReport('story','${s.id}')">🚩 Report</button>
+      ${!s.overcome ? `<button class="btn btn-secondary btn-sm" onclick="openOvercomeModal('${s.id}')">🌱 Add Overcome Update</button>` : ''}
+    </div>
+
+    <div class="comments-section">
+      <h3>💬 ${s.comments.length} Comment${s.comments.length !== 1 ? 's' : ''}</h3>
+      <div id="commentsContainer">
+        ${s.comments.length ? s.comments.map(c => commentHtml(c, s.id)).join('') : '<p style="color:var(--muted);font-size:0.9rem">No comments yet. Be the first to offer support.</p>'}
+      </div>
+      <div class="comment-form">
+        <h4>Leave a Supportive Comment</h4>
+        <textarea class="form-control" id="newComment" placeholder="Share encouragement, advice, or just let them know they're not alone..." style="min-height:100px;margin-bottom:12px"></textarea>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div class="toggle-row" style="padding:8px 12px;flex:1">
+            <label class="toggle-switch">
+              <input type="checkbox" id="commentAnon" checked>
+              <span class="toggle-slider"></span>
+            </label>
+            <span style="font-size:0.85rem;color:var(--mid)">Post anonymously</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="submitComment('${s.id}' this)">Send Support 💬</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function commentHtml(c, storyId) {
+  return `<div class="comment-item">
+    <div class="comment-header">
+      <span class="comment-author">${escHtml(c.authorDisplay)}</span>
+      <span class="comment-date">${timeAgo(c.createdAt)}</span>
+    </div>
+    <div class="comment-text">${escHtml(c.content)}</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="comment-like" onclick="likeComment('${escHtml(storyId)}','${escHtml(c.id)}',this)">♥ ${c.likes}</button>
+      <button class="comment-like" onclick="openReport('comment','${escHtml(c.id)}')">🚩 Report</button>
+    </div>
+  </div>`;
+}
+
+async function likeStory(id, btn) {
+  const res = await api('POST', `/stories/${id}/like`);
+  if (res.ok) {
+    btn.classList.add('liked');
+    btn.innerHTML = `♥ <span>${res.data.likes}</span> Helpful`;
+    btn.disabled = true;
+  }
+}
+
+async function likeComment(storyId, commentId, btn) {
+  const res = await api('POST', `/stories/${storyId}/comments/${commentId}/like`);
+  if (res.ok) {
+    btn.innerHTML = `♥ ${res.data.likes}`;
+    btn.disabled = true;
+  }
+}
+
+async function submitComment(storyId) {
+  const content = document.getElementById('newComment').value.trim();
+  const anonymous = document.getElementById('commentAnon').checked;
+  if (!content || content.length < 5) { showToast('Please write at least 5 characters.', 'error'); return; }
+  async function submitComment(storyId, btn) {
+  btn.disabled = true;
+  const res = await api('POST', `/stories/${storyId}/comments`, { content, anonymous });
+  btn.disabled = false;
+  if (res.ok) {
+    document.getElementById('newComment').value = '';
+    showToast('Comment posted! 💬', 'success');
+    const c = res.data.data;
+    if (c) {
+      const el = document.createElement('div');
+      el.innerHTML = commentHtml(c, storyId);
+      const container = document.getElementById('commentsContainer');
+      const empty = container.querySelector('p');
+      if (empty) empty.remove();
+      container.prepend(el.firstElementChild);
+    }
+  } else {
+    showToast(res.data.message || 'Could not post comment.', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════
+// SUBMIT STORY
+// ═══════════════════════════════════════════
+const CRISIS_WORDS = ['suicide', 'kill myself', 'end my life', 'want to die', 'self-harm', 'self harm', 'no reason to live'];
+
+function checkCrisisWords(text) {
+  const hasC = CRISIS_WORDS.some(w => text.toLowerCase().includes(w));
+  document.getElementById('crisis-alert-submit').classList.toggle('show', hasC);
+}
+
+async function submitStory(e) {
+  e.preventDefault();
+  let valid = true;
+  const title = document.getElementById('storyTitle').value.trim();
+  const category = document.getElementById('storyCategory').value;
+  const situation = document.getElementById('storySituation').value.trim();
+  const overcome = document.getElementById('storyOvercome').value.trim();
+  const anonymous = document.getElementById('anonymousToggle').checked;
+  const tagsRaw = document.getElementById('storyTags').value;
+  // FIX Frontend: validate tags are strings and trim them properly
+  const tags = tagsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0 && t.length <= 50).slice(0, 5);
+
+  if (title.length < 10) { showEl('titleError'); valid = false; } else hideEl('titleError');
+  if (!category) { showEl('categoryError'); valid = false; } else hideEl('categoryError');
+  if (situation.length < 50) { showEl('situationError'); valid = false; } else hideEl('situationError');
+  if (!valid) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Sharing your story…';
+  const res = await api('POST', '/stories', { title, category, situation, overcome: overcome || null, anonymous, tags });
+  btn.disabled = false; btn.textContent = '🌿 Share My Story';
+
+  if (res.ok) {
+    document.getElementById('submitStoryForm').reset();
+    // Reset char counts
+    ['titleCount','situationCount','overcomeCount'].forEach(id => document.getElementById(id).textContent = '0');
+    document.getElementById('crisis-alert-submit').classList.remove('show');
+    showAlert('submitAlert', res.data.message, 'success');
+    showToast(res.data.message, 'success');
+    if (res.data.crisisAlert) showToast('💛 Please reach out if you need support.', 'default');
+  } else {
+    const msg = res.data.errors ? res.data.errors.map(e => e.msg).join(' ') : res.data.message;
+    showAlert('submitAlert', msg || 'Submission failed.', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════
+async function loadDashboard() {
+  const container = document.getElementById('dashboardContent');
+  container.innerHTML = '<div class="spinner"></div>';
+  const res = await api('GET', '/dashboard');
+  if (!res.ok) {
+    container.innerHTML = '<div class="empty-state"><span class="icon">⚡</span><h3>Could not load dashboard</h3><p>Please try again.</p></div>';
+    return;
+  }
+  const { user, stories, stats, reminders } = res.data.data;
+
+  const remindersHtml = reminders.length ? reminders.map(r => `
+    <div class="reminder-card">
+      <div style="flex:1"><p>💡 <strong>${escHtml(r.title)}</strong><br><span style="font-size:0.85rem;color:var(--mid)">${escHtml(r.message)}</span></p></div>
+      <button class="btn btn-sm btn-primary" onclick="openOvercomeModal('${escHtml(r.storyId)}')">Update Progress</button>
+    </div>`).join('') : '';
+
+  const storiesHtml = stories.length ? stories.map(s => `
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <span class="story-status-badge status-${s.status}">${s.status}</span>
+            <span class="category-badge cat-${s.category}" style="font-size:0.72rem">${escHtml(s.category.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()))}</span>
+            <span style="font-size:0.8rem;color:var(--muted)">${timeAgo(s.createdAt)}</span>
+          </div>
+          <strong style="cursor:pointer;color:var(--sage-dark)" onclick="openStory('${escHtml(s.id)}')">${escHtml(s.title)}</strong>
+          <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">♥ ${s.likes} &nbsp;👁 ${s.views} &nbsp;💬 ${s.commentCount}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${!s.overcome ? `<button class="btn btn-sm btn-secondary" onclick="openOvercomeModal('${escHtml(s.id)}')">🌱 Update Progress</button>` : '<span class="overcome-badge">✓ Overcome</span>'}
+        </div>
+      </div>
+    </div>`) .join('')
+    : '<div class="empty-state" style="padding:32px"><span class="icon">📖</span><h3>No stories yet</h3><p>Share your first story with the community.</p><button class="btn btn-primary" onclick="navigate(\'submit\')" style="margin-top:12px">Share a Story</button></div>';
+
+  container.innerHTML = `
+    <div class="dashboard-header">
+      <h2>Welcome back, ${escHtml(user.username)} 🌿</h2>
+      <p>Member since ${formatDate(user.createdAt)}</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><span class="num">${stats.totalStories}</span><span class="label">Stories Shared</span></div>
+      <div class="stat-card"><span class="num">${stats.storiesOvercome}</span><span class="label">Overcome Updates</span></div>
+      <div class="stat-card"><span class="num">${stats.totalLikesReceived}</span><span class="label">Likes Received</span></div>
+      <div class="stat-card"><span class="num">${stats.totalViewsReceived}</span><span class="label">Total Views</span></div>
+      <div class="stat-card"><span class="num">${stats.totalComments}</span><span class="label">Comments Made</span></div>
+    </div>
+    ${remindersHtml ? `<h3 class="section-title" style="color:var(--warning)">⏰ Progress Reminders</h3>${remindersHtml}` : ''}
+    <h3 class="section-title">My Stories</h3>
+    ${storiesHtml}
+    <div style="margin-top:24px"><button class="btn btn-primary" onclick="navigate('submit')">+ Share Another Story</button></div>`;
+}
+
+// ═══════════════════════════════════════════
+// OVERCOME MODAL
+// ═══════════════════════════════════════════
+function openOvercomeModal(storyId) {
+  state.overcomeTarget = storyId;
+  document.getElementById('overcomeText').value = '';
+  openModal('overcomeModal');
+}
+
+async function submitOvercome() {
+  const overcome = document.getElementById('overcomeText').value.trim();
+  if (!overcome || overcome.length < 20) { showToast('Please write at least 20 characters.', 'error'); return; }
+  const res = await api('PATCH', `/stories/${state.overcomeTarget}/overcome`, { overcome });
+  if (res.ok) {
+    closeModal('overcomeModal');
+    showToast('Progress shared! You are an inspiration. 🌱', 'success');
+    if (state.currentPage === 'dashboard') loadDashboard();
+  } else {
+    showToast(res.data.message || 'Could not save update.', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════
+// REPORT MODAL
+// ═══════════════════════════════════════════
+function openReport(type, id) {
+  state.reportTarget = { type, id };
+  openModal('reportModal');
+}
+
+async function submitReport() {
+  if (!state.reportTarget) return;
+  const res = await api('POST', '/reports', {
+    targetType: state.reportTarget.type,
+    targetId: state.reportTarget.id,
+    reason: document.getElementById('reportReason').value,
+    details: document.getElementById('reportDetails').value,
+  });
+  closeModal('reportModal');
+  showToast(res.ok ? 'Report submitted. Thank you for keeping SafeSpace safe. 🛡' : 'Could not submit report.', res.ok ? 'success' : 'error');
+}
+
+// ═══════════════════════════════════════════
+// ADMIN PANEL
+// ═══════════════════════════════════════════
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('admin-' + tab).classList.add('active');
+  if (tab === 'overview') loadAdminOverview();
+  if (tab === 'stories') loadAdminStories('pending');
+  if (tab === 'comments') loadAdminComments('pending');
+  if (tab === 'reports') loadAdminReports();
+}
+
+async function loadAdminOverview() {
+  const res = await api('GET', '/admin/stats');
+  if (!res.ok) return;
+  const d = res.data.data;
+  document.getElementById('adminStatsGrid').innerHTML = `
+    <div class="stat-card"><span class="num">${d.stories.approved}</span><span class="label">Approved Stories</span></div>
+    <div class="stat-card"><span class="num" style="color:var(--warning)">${d.stories.pending}</span><span class="label">Pending Review</span></div>
+    <div class="stat-card"><span class="num">${d.comments.total}</span><span class="label">Total Comments</span></div>
+    <div class="stat-card"><span class="num">${d.users.total}</span><span class="label">Registered Users</span></div>
+    <div class="stat-card"><span class="num" style="color:var(--danger)">${d.reports.pending}</span><span class="label">Open Reports</span></div>`;
+  document.getElementById('topStoriesTbody').innerHTML = d.topStories.map(s =>
+    `<tr><td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:var(--sage-dark)" onclick="openStory('${s.id}')">${escHtml(s.title)}</td><td>${escHtml(s.category)}</td><td>${s.views}</td><td>${s.likes}</td></tr>`
+  ).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">No stories</td></tr>';
+}
+
+async function loadAdminStories(status) {
+  const url = status ? `/admin/stories?status=${status}` : '/admin/stories';
+  const res = await api('GET', url);
+  if (!res.ok) return;
+  document.getElementById('adminStoriesTbody').innerHTML = res.data.data.map(s => `
+    <tr>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:var(--sage-dark)" onclick="openStory('${s.id}')">${escHtml(s.title)}</td>
+      <td>${escHtml(s.category)}</td>
+      <td><span class="story-status-badge status-${s.status}">${s.status}</span></td>
+      <td style="white-space:nowrap">${timeAgo(s.createdAt)}</td>
+      <td>
+        <div class="admin-actions">
+          ${s.status !== 'approved' ? `<button class="btn btn-sm" style="background:var(--success-light);color:var(--success);border:none;cursor:pointer" onclick="changeStoryStatus('${s.id}','approved',this)">✓ Approve</button>` : ''}
+          ${s.status !== 'rejected' ? `<button class="btn btn-sm btn-ghost" onclick="changeStoryStatus('${s.id}','rejected',this)">✗ Reject</button>` : ''}
+          <button class="btn btn-sm btn-danger" onclick="changeStoryStatus('${s.id}','removed',this)">🗑 Remove</button>
+        </div>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No stories found</td></tr>';
+}
+
+async function changeStoryStatus(id, status, btn) {
+  btn.disabled = true;
+  const res = await api('PATCH', `/admin/stories/${id}/status`, { status });
+  if (res.ok) { showToast(`Story marked as ${status}.`, 'success'); loadAdminStories(); }
+  else { showToast('Action failed.', 'error'); btn.disabled = false; }
+}
+
+async function loadAdminComments(status) {
+  const url = status ? `/admin/comments?status=${status}` : '/admin/comments';
+  const res = await api('GET', url);
+  if (!res.ok) return;
+  document.getElementById('adminCommentsTbody').innerHTML = res.data.data.map(c => `
+    <tr>
+      <td style="max-width:280px">${escHtml(c.content.slice(0, 100))}${c.content.length > 100 ? '…' : ''}</td>
+      <td>${escHtml(c.authorDisplay)}</td>
+      <td><span class="story-status-badge status-${c.status}">${c.status}</span></td>
+      <td>
+        <div class="admin-actions">
+          ${c.status !== 'approved' ? `<button class="btn btn-sm" style="background:var(--success-light);color:var(--success);border:none;cursor:pointer" onclick="changeCommentStatus('${c.id}','approved',this)">✓ Approve</button>` : ''}
+          <button class="btn btn-sm btn-danger" onclick="changeCommentStatus('${c.id}','removed',this)">🗑 Remove</button>
+        </div>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">No comments found</td></tr>';
+}
+
+async function changeCommentStatus(id, status, btn) {
+  btn.disabled = true;
+  const res = await api('PATCH', `/admin/comments/${id}/status`, { status });
+  if (res.ok) { showToast(`Comment marked as ${status}.`, 'success'); loadAdminComments(); }
+  else { showToast('Action failed.', 'error'); btn.disabled = false; }
+}
+
+async function loadAdminReports() {
+  // FIX Frontend Bug: was calling /reports (unauthenticated route) instead of the correct
+  // authenticated moderator endpoint. Changed to /reports?status=all for full list.
+  const res = await api('GET', '/reports?status=all');
+  if (!res.ok) { showToast('Could not load reports.', 'error'); return; }
+  document.getElementById('adminReportsTbody').innerHTML = res.data.data.map(r => `
+    <tr>
+      <td>${escHtml(r.targetType)}</td>
+      <td>${escHtml(r.reason)}</td>
+      <td><span class="story-status-badge ${r.status === 'pending' ? 'status-pending' : 'status-approved'}">${r.status}</span></td>
+      <td style="white-space:nowrap">${timeAgo(r.createdAt)}</td>
+      <td>
+        ${r.status === 'pending' ? `<div class="admin-actions">
+          <button class="btn btn-sm btn-danger" onclick="resolveReport('${r.id}','removed',this)">Remove Content</button>
+          <button class="btn btn-sm btn-ghost" onclick="resolveReport('${r.id}','dismissed',this)">Dismiss</button>
+        </div>` : '<span style="color:var(--muted);font-size:0.82rem">Resolved</span>'}
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No reports</td></tr>';
+}
+
+async function resolveReport(id, resolution, btn) {
+  btn.disabled = true;
+  const res = await api('PATCH', `/reports/${id}/resolve`, { resolution });
+  if (res.ok) { showToast('Report resolved.', 'success'); loadAdminReports(); }
+  else { showToast('Failed to resolve.', 'error'); btn.disabled = false; }
+}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+function showToast(msg, type = 'default') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.4s';
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
+}
+
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = `alert alert-${type} show`;
+  el.textContent = msg;
+  setTimeout(() => el.classList.remove('show'), 8000);
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showEl(id) { document.getElementById(id).classList.add('show'); }
+function hideEl(id) { document.getElementById(id).classList.remove('show'); }
+
+function updateCharCount(el, countId, max) {
+  document.getElementById(countId).textContent = el.value.length;
+}
+
+// Secure HTML escaping — prevent XSS
+function escHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function timeAgo(iso) {
+  if (!iso) return '';
+  const diff = (Date.now() - new Date(iso)) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 2592000) return `${Math.floor(diff / 86400)}d ago`;
+  return formatDate(iso);
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
