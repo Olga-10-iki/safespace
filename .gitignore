@@ -1,0 +1,15 @@
+# Dependencies
+backend/node_modules/
+
+# Environment secrets — NEVER commit this
+backend/.env
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
