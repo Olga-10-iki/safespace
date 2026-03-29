@@ -89,8 +89,7 @@ Open `frontend/index.html` with the Live Server extension (runs on port 5500). T
 
 | Role      | Email                   | Password    |
 |-----------|-------------------------|-------------|
-| Admin     | admin@safespace.app     | Admin@1234  |
-| Moderator | mod@safespace.app       | Mod@1234    |
+| Admin     | admin@safespace.org     | admin  
 
 ---
 
